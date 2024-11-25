@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Triagem inicial</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-image: url('https://cdn.pixabay.com/photo/2013/11/20/09/36/paper-patterns-213695_1280.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            color: #333;
+        }
+        .title {
+            background-color: rgba(74, 144, 226, 0.8);
+            color: white;
+            text-align: center;
+            padding: 30px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 36px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h2.aspect-title {
+            display: none;
+        }
+        h2.result-title {
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 15px;
+        }
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        button {
+            padding: 6px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 40%;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .question {
+            margin: 15px 0;
+        }
+        #back-button {
+            display: none;
+        }
+        .aspect-list {
+            margin-top: 20px;
+            text-align: left;
+        }
+        .aspect-result {
+            margin: 10px 0;
+        }
+        .final-message {
+            text-align: center;
+            font-size: 24px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="title">Questionário</div>
+    <div class="container">
+        <div id="content">
+            <!-- Conteúdo das perguntas será injetado aqui -->
+        </div>
+        <div class="button-container">
+            <button id="back-button">Voltar</button>
+            <button id="next-button">Próximo</button>
+        </div>
+    </div>
+    <script>
+        const aspectos = [
+            { title: "Aspecto: Comunicação e Interações Sociais", questions: [
+                { text: "Evito participar de atividades em grupo, como festas ou eventos de trabalho.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Costumo me sentir muito cansado(a), tanto físico quanto emocionamente, após interações sociais.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Frequentemente, sinto-me desconfortável em situações sociais e prefiro evitar certas interações.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Tenho dificuldade em entender começar ou parar de falar.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Demoro mais tempo para interpretar expressões faciais de outras pessoas.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Em situações sociais, fico confuso(a) sobre o que outras pessias estão conversando. ", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Não me sinto capaz de comunicar meus sentimentos.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Em momentos de estresse, costumo evitar ou adiar conversas com outras pessoas.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "As pessoas dizem que meu tom de voz não corresponde às minhas emoções.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Tenho dificuldade para manter o contato visual durante uma conversa.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+            ]},
+            { title: "Aspecto: Comportamentos Repetitivos e Respostas a Estímulos", questions: [
+                { text: "Evito mudanças na minha rotina, mesmo que sejam pequenas.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Quando minha rotina é interrompida, sinto uma necessidade muito forte de voltar a como estava antes. ", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Preciso ser avisado(a) com antecedência sobre mudanças na rotina de amigos e familiares, mesmo que essas mudanças não afetem diretamente meus planos.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Me sinto desconfortável em ambientes novos, como novos trabalhos ou academias. ", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Tenho interesse em atividades altamente repetitivas, como assistir o mesmo filme e ouvir a mesma música diversas vezes seguidas.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Gosto de me concentrar profundamente em um único tema ou interesse.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Tenho hábitos diários que, se não foram cumpridos, me deixam desconfortável e ansioso(a).", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: " Recebo críticas por seguir rigorosamente regras ou rotinas que outras pessoas consideram flexíveis.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: " Sinto uma necessidade de organizar minhas atividades ou objetos de um jeito específico e fico ansioso(a) se isso mudar. ", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Tenho vontade de repetir certas frases, sons ou palavras que ouvi ao longo do dia.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+            ]},
+            { title: "Aspecto: Preferências por Estruturas Rígidas", questions: [
+                { text: "Prefiro seguir um cronograma estrito para minhas atividades diárias.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Gosto de usar objetos especificos para certas tarefas como tomar café sempre na mesma xicara. Se não for assim, fico desconfortável.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Mudanças na rotina, como viajar ou mudar de casa, me deixam desconfortável.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Em festas ou reuniões, prefiro quando me explicam como devo me comportar, como quem eu devo cumprimentar ou o que esperar do evento. Sem essas orientações, fico inseguro(a) ou desconfortável.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Pessoas e obejtos devem executar a mesma função e ocupar o mesmo espaço sempre.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Prefiro não participar de atividades como jogos ou dinâmicas de grupo em que eu sei o que vai acontecer, porque não me sinto confortável com situações inesperadas.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Em um jantar formal, onde sei como me comportar e o quqe é esperado, me sinto mais a vontade doq que em uma festa onde tudo e mais livres e imprevisível.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Crio roteiros de conversas quando a conversa não sai como o planejado, tenho dificuldades em saber como agir.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Prefiro trabalhar sozinho(a) pporque posso seguir minhas próprias regras e métodos.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Tenho um lugar específicos onde gosto de sentar no carro, no ônibus, na mesa de trabalho e até mesmo uma cabine favorita no banheiro, e fico irritado(a) quando alguém ocupa esse lugar.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+            ]},
+            { title: "Aspecto: Rigidez Cognitiva e Social", questions: [
+                { text: "Sinto desconforto em ambientes sociais onde preciso fazer ajustes rápidos no meu comportamento.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Quando estou em uma conversa, costumo continuar falando sobre assuntos que gosto mesmo que os outros mudem de assunto.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Fico frustrado(a) quando mudam planos sociais, como trocar o lugar ou o número de pessoas que iríamos encontrar.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Algumas pessoas dizem que sou muito direto(a) ou que não percebo como minhas palavras podem afetá-las.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Tenho dificuldade em entender sinais sutis, como mudanças no tom de voz ou expressões faciais, para saber como a outra pessoa está se sentindo ou qual sua verdadeira intenção.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Quando estou em um jantar e não sei como devo me comportar, observo como as outras pessoas usam os talheres ou interagem e tento fazer o mesmo para não errar.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Quando estou sob estresse, sinto que é mais difícil controlar minhas expressões faciais ou gestos.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Me sinto desconectado emocionalmente durante interações sociais, como se estivesse distante.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Tenho dificuldade em me adaptar para lidar com diferentes pessoas ou ambientes, e geralmente escolho uma pessoas específica com quem me sinto mais à vontade.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Às vezes, falo com minha família de maneiro muito formal, como se estivesse no trabalho, ou, no trabalho, ajo de forma descontraída demais, como se estivesse em casa.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+            ]},
+            { title: "Aspecto: Desafios de Desenvolvimento Social", questions: [
+                { text: "Em uma conversa com colegas da minha idade, percebo que tenho mais dificuldade em manter o diálogo fluido ou em me conectar com eles, enquanto parece algo natural para os outros.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Vejo pessoas da minha idade fazendo amigos ou conseguido promoções no trabalho, e sinto que não consigo acompanhar, porque me falta habilidades para lidar com as situações sociais ou profissionais necessárias para isso. ", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Tenho dificuldade em compreender o contexto de uma situação ou enxergar o quadro geral devido à tendência de focar em detalhes (pensamentos de tudo ou nada)", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Sinto dificuldade em ver as coisas de perspeectiva de outras pessoas, por exemplo, entender como elas podem pensar ou sentir sobre algo", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Tenho dificuldades em iniciar ou manter amizadades, especialmente em situações de grupo.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Em uma apresentação, sinto dificuldade em falar e, ao mesmo tempo, usar as mãos ou expressões faciais para complementar o que estou dizendo o que me deixa nervoso(a).", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Sou frequentemente lembrado(a) por terceiros de que minha postura corporal parece rígida ou pouca natural em interações sociais.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Muitas vezes não percebo quando alguém está sendo irônico ou fazendo uma brincadeira.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Tenho dificuldade em entender quais comportamento são apropriados em uma entrevista de emprego ou reunião.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Quando falo, minha entonação é constantemente interpretada como não apropriada para expressar como estou me sentindo.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+            ]},
+            { title: "Aspecto: Deficiência Motora", questions: [
+                { text: "Tenho dificuldades com a coordenação motora e sou conhecido(a) como uma pessoa desastrada.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Tenho movimentos incomuns para alguém da minha idade, como caminhar na ponta dos pés e sacudir as mãos.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Tenho comportamentos de autolesivos, como bater a cabeça ou morder as mãos, especialmente em momentos de frustração ou ansiedade.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Em algumas situações, sinto como se meu corpo travasse, me deixando imóvel ou muito lento(a) para agir.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Quando visito um shopping novo ou vou a um evento em um lugar desconhecido sinto dificuldade em me orientar e ás vezes fico perdido(a), mesmo com indicações ou mapas.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Fico para trás em atividades em grupo que exigem coordenação física, como danças ou esportes relacionados.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Em certos momentos, as pessoas me corrigem por realizar movimentos repetitivos com as mãos o corpo. ", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Já precisei parar uma atividade física por se sentir desajeitado ou incapaz de seguir o ritmo.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Tenho dificuldade em realizar atividades que envolvem coordenação motora fina, como escrever, desenhar, amarrar o cardaço ou abotoar a camisa.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Durante eventos importantes, como apresentações, começo a balançar a perna sem parar ou a apertar minhas mãos com força, e não consigo controlar esses movimentos.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+            ]},
+            { title: "Aspecto: Impacto Psicossocial", questions: [
+                { text: "Tenho dificuldade em alcançar uma vida independente ou em manter um emprego remunerado, mesmo sem dificuldades intelectuais significativas.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Sinto que o isolamento social tem impacto em minha saúde, especialmente pela dificuldade em buscar ajuda quando necessário.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Preciso se lembrado(a) por terceiros para realizar tarefas diárias como comer, tomar banho ou udar o banheiro.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Minhas dificuldades em interagir socialmente podem causar situações desconfortáveis ou arriscadas, como mal-entendidos no trabalho ou em outras situações sociais", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Existem momentos de extremo desespero que me levaram a pensar em suícidio ou autolesão.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Em um dia normal, eu tenho dificuldade para ir ao mercado ou organizar minhas tarefas porque fico nervoso(a) em interações sociais e isso me atrapalha a focar no que preciso", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Me sinto solitário(a) devido a minha dificuldade de manter ou iniciar relações.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Sinto que minha dificuldade em entender as normas sociais impacta meu desempenho no trabalho ou em ambientes profissionais.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Frequentemente minhas dificuldades sociais me fazem sentir isolado(a), mesmo quando estou com outras pessoas. ", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Minhas interações sociais frequentemente me deixam emocionalmente esgotado ou mentalmente exausto.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+            ]},
+            { title: "Aspecto: Diagnósticos Diferenciais, Comorbidades e Riscos Associados", questions: [
+                { text: "Tenho dificuldades em manter a atenção ou foco durante atividades e sinto que minha mente se desvia facilmente de tarefas que exigem concentração.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Às vezes, interrompo os outros ou falo muito alto em situações sociais, sem perceber.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Tenho sitomas de outros problemas de saúde mental, como ansiedade ou depressão, além das dificuldades sociais.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Tenho dificuldades significativas de aprendizagem, como leitura, escrita ou matemática.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Tenho padeões alimentares restritivos, como comer alimentos específicos, ou evitar vários tipos de comida.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Tenho insônia e dificuldades para dormir.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Em situações de frustração, tenho explosões emocionais ou comportamentos despropporcionais à situação, como gritar ou chorar.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Não consigo controlar comportamentos impulsivos ao sentir raiva ou estresse.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Em situações de estresse extremo, costumo ter crises de ansiedade que me levam a isolar-me socialmente.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+                { text: "Tenho reações extremas a estímulos que normamente não afetam outras pessoas, como cheiros fortes ou barulhos altos.", alternatives: ["Não é verdade", "Algumas vezes é verdade", "Muitas vezes é verdade", "Quase sempre é verdade"] },
+            ]}
+        ];
+        
+        let aspectoAtual = 0;
+        let totalPontos = new Array(aspectos.length).fill(0);
+        
+        function carregarPerguntas() {
+            const content = document.getElementById('content');
+            content.innerHTML = '';
+
+            const aspecto = aspectos[aspectoAtual];
+
+            const title = document.createElement('h2');
+            title.className = 'aspect-title'; /* Aplicar a classe de ocultação */
+            title.textContent = aspecto.title;
+            content.appendChild(title);
+
+            aspecto.questions.forEach((pergunta, index) => {
+                const perguntaDiv = document.createElement('div');
+                perguntaDiv.className = 'question';
+                perguntaDiv.innerHTML = `<p>${pergunta.text}</p>` + 
+                    pergunta.alternatives.map((alt, altIndex) =>
+                        `<label for="pergunta${index}_alt${altIndex}"><input type="radio" id="pergunta${index}_alt${altIndex}" name="pergunta${index}" value="${altIndex}"> ${alt}</label><br>`
+                    ).join('');
+                content.appendChild(perguntaDiv);
+            });
+
+            document.getElementById('back-button').style.display = aspectoAtual > 0 ? 'block' : 'none';
+            document.getElementById('next-button').textContent = aspectoAtual < aspectos.length - 1 ? 'Próximo' : 'Finalizar';
+        }
+
+        document.getElementById('next-button').addEventListener('click', () => {
+            const respostas = document.querySelectorAll(`input[name^="pergunta"]`);
+            let pontosAspecto = 0;
+
+            respostas.forEach((resposta) => {
+                if (resposta.checked) {
+                    pontosAspecto += parseInt(resposta.value);
+                }
+            });
+
+            totalPontos[aspectoAtual] = pontosAspecto;
+
+            if (aspectoAtual < aspectos.length - 1) {
+                aspectoAtual++;
+                carregarPerguntas();
+            } else {
+                mostrarFinalizacao();
+            }
+        });
+
+        function mostrarFinalizacao() {
+            const content = document.getElementById('content');
+            content.innerHTML = `
+                <h2 class="result-title">Parabéns, você finalizou o teste!</h2>
+                <p>Por favor, não avance para a próxima página. Entregue este dispositivo ao avaliador responsável e aguarde a devolutiva.</p>
+                <div class="final-message">
+                    <button id="finalizar-button">Finalizar</button>
+                </div>
+            `;
+            document.getElementById('back-button').style.display = 'none';
+            document.getElementById('next-button').style.display = 'none';
+            
+            document.getElementById('finalizar-button').addEventListener('click', mostrarResultado);
+        }
+
+        function mostrarResultado() {
+            const content = document.getElementById('content');
+            content.innerHTML = `
+                <h2 class="result-title">Resultados</h2>
+                <div class="aspect-list">
+                    <div class="aspect-result">Aspecto: Comunicação e Interações Sociais: ${totalPontos[0]} pontos</div>
+                    <div class="aspect-result">Aspecto: Comportamentos Repetitivos e Respostas a Estímulos: ${totalPontos[1]} pontos</div>
+                    <div class="aspect-result">Aspecto: Preferências por Estruturas Rígidas: ${totalPontos[2]} pontos</div>
+                    <div class="aspect-result">Aspecto: Rigidez Cognitiva e Social: ${totalPontos[3]} pontos</div>
+                    <div class="aspect-result">Aspecto: Desafios de Desenvolvimento Social: ${totalPontos[4]} pontos</div>
+                    <div class="aspect-result">Aspecto: Deficiência Motora: ${totalPontos[5]} pontos</div>
+                    <div class="aspect-result">Aspecto: Impacto Psicossocial: ${totalPontos[6]} pontos</div>
+                    <div class="aspect-result">Aspecto: Diagnósticos Diferenciais, Comorbidades e Riscos Associados: ${totalPontos[7]} pontos</div>
+                </div>
+            `;
+        }
+
+        document.getElementById('back-button').addEventListener('click', () => {
+            if (aspectoAtual > 0) {
+                aspectoAtual--;
+                carregarPerguntas();
+            }
+        });
+
+        // Carregar as primeiras perguntas
+        carregarPerguntas();
+    </script>
+</body>
+</html>
